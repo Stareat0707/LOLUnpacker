@@ -22,24 +22,24 @@ namespace LOLResourceExtractionTool
             Console.WriteLine($"Path List Count: {PathListCount}");
 
             Console.WriteLine();
-            PathListEntry[] pathListEntries = new PathListEntry[PathListCount];
+            PathListEntries = new PathListEntry[PathListCount];
             for (int i = 0; i < PathListCount; ++i)
             {
                 Console.WriteLine($"Path List Entry {i + 1}");
 
-                pathListEntries[i] = new PathListEntry(value, startIndex + 8 + i * 8);
+                PathListEntries[i] = new PathListEntry(value, startIndex + 8 + i * 8);
 
                 Console.WriteLine();
             }
 
             Console.WriteLine();
-            string[] pathStrings = new string[PathListCount];
+            PathStrings = new string[PathListCount];
             for (int i = 0; i < PathListCount; ++i)
             {
                 Console.WriteLine($"Path String {i + 1}");
 
-                pathStrings[i] = Encoding.Default.GetString(value, startIndex + pathListEntries[i].PathOffset, pathListEntries[i].PathLength);
-                Console.WriteLine($"Path String: {pathStrings[i]}");
+                PathStrings[i] = Encoding.Default.GetString(value, startIndex + PathListEntries[i].PathOffset, PathListEntries[i].PathLength);
+                Console.WriteLine($"Path String: {PathStrings[i]}");
 
                 Console.WriteLine();
             }

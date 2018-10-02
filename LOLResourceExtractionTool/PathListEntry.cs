@@ -16,7 +16,7 @@ namespace LOLResourceExtractionTool
             PathOffset = BitConverter.ToInt32(value, startIndex);
             Console.WriteLine($"Path Offset: {PathOffset}");
 
-            PathLength = BitConverter.ToInt32(value, startIndex + 4);
+            PathLength = BitConverter.ToInt32(value, startIndex + 4) - 1;
             Console.WriteLine($"Path Length: {PathLength}");
         }
     }

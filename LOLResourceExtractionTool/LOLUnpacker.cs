@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ionic.Zlib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,19 +27,19 @@ namespace LOLResourceExtractionTool
                 raf = new byte[fs.Length];
                 fs.Read(raf, 0, Convert.ToInt32(fs.Length));
             }
-            
+
             int magicNumber = BitConverter.ToInt32(raf, 0);
             Console.WriteLine($"Magic Number: {magicNumber}");
-            
+
             int version = BitConverter.ToInt32(raf, 4);
             Console.WriteLine($"Version: {version}");
-            
+
             int managerIndex = BitConverter.ToInt32(raf, 8);
             Console.WriteLine($"Manager Index: {managerIndex}");
-            
+
             int fileListOffset = BitConverter.ToInt32(raf, 12);
             Console.WriteLine($"File List Offset: {fileListOffset}");
-            
+
             int pathListOffset = BitConverter.ToInt32(raf, 16);
             Console.WriteLine($"Path List Offset: {pathListOffset}");
 
@@ -47,6 +48,26 @@ namespace LOLResourceExtractionTool
 
             Console.WriteLine();
             var pathList = new PathList(raf, pathListOffset);
+
+            using (var original = File.OpenRead("Archive_1.raf.dat"))
+            {
+                byte[] array = new byte[original.Length];
+                original.Read(array, 0, Convert.ToInt32(original.Length));
+
+                foreach (var fileEntry in fileList.FileEntries)
+                {
+                    using (var sub = new MemoryStream(array, fileEntry.DataOffset, fileEntry.DataSize))
+                    {
+                        using (var zlibStream = new ZlibStream(sub, CompressionMode.Decompress))
+                        {
+                            using (var decompressed = File.Create(pathList.PathStrings[fileEntry.PathListIndex]))
+                            {
+                                zlibStream.CopyTo(decompressed);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
